@@ -16,6 +16,23 @@ export class roomManager{
         const roomId = this.generateId();
         this.rooms.set(roomId.toString() ,{user1 , user2 })
          
-        user1.socket.emit
+        user1?.socket.emit("new-room" , {
+            roomId
+        })
     }
+    onOffer(roomId : string , sdp:string){
+        const user2 = this.rooms.get(roomId)?.user2;
+        user2?.socket.emit("offer",{
+            sdp
+        })
+
+    }
+    onAnswer(roomId : string , sdp:string){
+        const user1= this.rooms.get(roomId)?.user1;
+        user1?.socket.emit("offer",{
+            sdp
+        })
+
+    }
+    
 }
