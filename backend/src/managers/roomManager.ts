@@ -16,21 +16,22 @@ export class roomManager{
         const roomId = this.generateId();
         this.rooms.set(roomId.toString() ,{user1 , user2 })
          
-        user1?.socket.emit("new-room" , {
+        user1?.socket.emit("send-offer" , {
             roomId
         })
     }
+
     onOffer(roomId : string , sdp:string){
         const user2 = this.rooms.get(roomId)?.user2;
         user2?.socket.emit("offer",{
-            sdp
+            sdp,roomId
         })
 
     }
     onAnswer(roomId : string , sdp:string){
         const user1= this.rooms.get(roomId)?.user1;
-        user1?.socket.emit("offer",{
-            sdp
+        user1?.socket.emit("answer",{
+            sdp,roomId
         })
 
     }
