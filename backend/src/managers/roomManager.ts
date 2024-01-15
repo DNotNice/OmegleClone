@@ -13,7 +13,7 @@ export class roomManager{
     generateId(){ return GLOBAL_ROOM_ID++;  }
     
     createRoom(user1 :Users , user2 : Users ){
-        const roomId = this.generateId();
+        const roomId = this.generateId().toString();
         this.rooms.set(roomId.toString() ,{user1 , user2 })
          
         user1?.socket.emit("send-offer" , {
@@ -29,6 +29,7 @@ export class roomManager{
 
     }
     onAnswer(roomId : string , sdp:string){
+      
         const user1= this.rooms.get(roomId)?.user1;
         user1?.socket.emit("answer",{
             sdp,roomId

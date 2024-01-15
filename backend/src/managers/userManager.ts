@@ -45,8 +45,7 @@ export class userManager{
         
         if(!user1 || !user2) return
         
-        console.log("creating room");
-        console.log("user1 ->" , user1)
+
         const room = this.roomManager.createRoom(user1 , user2);
         this.clearQueue()
     }
