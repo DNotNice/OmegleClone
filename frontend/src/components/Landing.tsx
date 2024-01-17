@@ -1,12 +1,38 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import { useEffect, useRef, useState } from "react"
+import { Room } from "./Room";
 
 export const Landing = () =>{
     const [name , setName] = useState("")
-        return <div>
-            <input type="text" onChange={(e)=>{ setName(e.target.value)}}>
+    const [joined, setJoined] = useState(false);
+    const [localaudiotrack , setLocalaudiotrack] = useState<null   | MediaStreamTrack >(null);
+    const [localvideotrack , setLocalvideotrack] = useState<null   | MediaStreamTrack >(null);
+    const Videoref = useRef<HTMLVideoElement>(null);
+    const getCam= async()=>{
+        const stream = await window.navigator.mediaDevices.getUserMedia({
+            video:true,
+            audio:true
+        })
+        const video =  stream.getVideoTracks()[0];
+        const audio = stream.getAudioTracks()[0];
+        setLocalvideotrack(video);
+        setLocalaudiotrack(audio);
+        if(!Videoref.current)return;
+        Videoref.current.srcObject = new MediaStream([video])
+        Videoref.current.play()
+    }
+    useEffect(()=>{
+        if(Videoref && Videoref.current){
+            getCam() }
+        },[Videoref])
 
-            </input>
-            <Link to={`/room/?name=${name}`}>Enter a room </Link>
-        </div>
+        if(!joined){
+                return <div>
+                <video autoPlay ref={Videoref}></video>
+                <input type="text" onChange={(e)=>{ setName(e.target.value)}}/>
+                <button onClick={()=>{
+                    setJoined(true)
+                }}>Enter a room </button>
+                </div>
+            }
+        return <Room name={name}  localaudiotrack = {localaudiotrack} localvideotrack = {localvideotrack}/>     
 }
